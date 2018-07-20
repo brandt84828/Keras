@@ -45,12 +45,16 @@ y_val=one_hot_train_labels[:1000]
 partial_y_train=one_hot_train_labels[1000:]
 
 
-#model.fit(partial_x_train,#跑完epochs=20後 因為發現在epochs=9開始overfitting 所以model 最後改跑這段
-#          partial_y_train,
-#          epochs=9,#在9的時候開始overfitting
-#          batch_size=512,
-#          validation_data=(x_val,y_val))
+model.fit(partial_x_train,#跑完epochs=20後 因為發現在epochs=9開始overfitting 所以model 最後改跑這段
+          partial_y_train,
+          epochs=9,#在9的時候開始overfitting
+          batch_size=512,
+          validation_data=(x_val,y_val))
 #model.evaluate(x_test,one_hot_test_labels)
+prediction = model.predict(x_test)
+#prediction[0].shape#有46個率輸出
+#np.sum(prediction[0])#加總靠近1or等於1
+#np.argmax(prediction[0])#返回沿軸(如有設置)最大值的index值
 
 history = model.fit(partial_x_train,
                     partial_y_train,
