@@ -79,3 +79,29 @@ model.compile(optimizer='rmsprop',
 model.fit(x_train,y_train,epochs=4,batch_size=512)#epoch20>4 執行20之後會發現驗證資料在4的表現最好>超過之後有overfitting的疑慮(為了緩和overfitting在此改成取4)
 results = model.evaluate(x_test,y_test)
 model.predict(x_test)#預測y
+
+#using Dropout to control overfitting
+dpt_model = models.Sequential()
+dpt_model.add(layers.Dense(16, activation='relu', input_shape=(10000,)))
+dpt_model.add(layers.Dropout(0.5))
+dpt_model.add(layers.Dense(16, activation='relu'))
+dpt_model.add(layers.Dropout(0.5))
+dpt_model.add(layers.Dense(1, activation='sigmoid'))
+
+dpt_model.compile(optimizer='rmsprop',
+                  loss='binary_crossentropy',
+                  metrics=['acc'])
+
+dpt_model_hist = dpt_model.fit(x_train, y_train,
+                               epochs=20,
+                               batch_size=512,
+                               validation_data=(x_test, y_test))#比較新的和原本的 所以用train和test而非partial train and val
+dpt_model_val_loss = dpt_model_hist.history['val_loss']
+original_val_loss = dpt_model_hist.history['loss']
+plt.clf()
+plt.plot(epochs, original_val_loss, 'b+', label='Original model')
+plt.plot(epochs, dpt_model_val_loss, 'bo', label='Dropout-regularized model')
+plt.xlabel('Epochs')
+plt.ylabel('Validation loss')
+plt.legend()
+plt.show()
